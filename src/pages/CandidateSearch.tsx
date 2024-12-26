@@ -3,72 +3,74 @@ import { searchGithub, searchGithubUser } from '../api/API';
 import Candidate from '../interfaces/Candidate.interface';
 
 const CandidateSearch = () => {
-  const [candidate, setCandidate] = useState<Candidate | null>(null);
-  const [username, setUsername] = useState(''); // State to hold the username input
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
+  const [savedCandidates, setSavedCandidates] = useState<Candidate[]>([]);
 
   useEffect(() => {
-    const fetchCandidateData = async () => {
-      if (username) {
-        try {
-          const data = await searchGithubUser(username);
-          if (data) {
-            const candidateData: Candidate = {
+    const fetchCandidates = async () => {
+      try {
+        const users = await searchGithub();
+        const candidateData = await Promise.all(
+          users.map(async (user: { login: string }) => {
+            const data = await searchGithubUser(user.login);
+            return {
               Name: data.name,
               UserName: data.login,
               Location: data.location,
-              Avatar: data.avatar,
+              Avatar: data.avatar_url,
               Email: data.email,
               Html_url: data.html_url,
               Company: data.company,
-            };
-            setCandidate(candidateData);
-          }
-        } catch (error) {
-          console.error('Error fetching candidate data:', error);
-        }
+            } as Candidate;
+          })
+        );
+        setCandidates(candidateData);
+      } catch (error) {
+        console.error('Error fetching candidates:', error);
       }
     };
 
-    fetchCandidateData();
-  }, [username]);
+    fetchCandidates();
+  }, []);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
+  const handleSaveCandidate = () => {
+    if (currentCandidateIndex < candidates.length) {
+      setSavedCandidates([...savedCandidates, candidates[currentCandidateIndex]]);
+      setCurrentCandidateIndex(currentCandidateIndex + 1);
+    }
   };
 
-  const handleSearchSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    // The useEffect hook will automatically fetch the data when the username state changes
+  const handleSkipCandidate = () => {
+    if (currentCandidateIndex < candidates.length) {
+      setCurrentCandidateIndex(currentCandidateIndex + 1);
+    }
   };
 
+  const currentCandidate = candidates[currentCandidateIndex];
 
   return (
     <div className="candidate-search-container">
       <h1>Candidate Search</h1>
-      <form onSubmit={handleSearchSubmit}>
-        <input
-          type="text"
-          placeholder="Enter GitHub username"
-          value={username}
-          onChange={handleSearchChange}
-          className="search-input"
-        />
-        <button type="submit" className="search-button">Search</button>
-      </form>
-      {candidate && (
+      {currentCandidate ? (
         <div className="candidate-container">
-          <img src={candidate.Avatar || ''} alt={candidate.Name || 'Candidate Avatar'} className="candidate-avatar" />
-          <h2>{candidate.Name}</h2>
-          <p>Username: {candidate.UserName}</p>
-          <p>Location: {candidate.Location}</p>
-          <p>Email: {candidate.Email}</p>
-          <p>Company: {candidate.Company}</p>
-          <a href={candidate.Html_url || ''} target="_blank" rel="noopener noreferrer">GitHub Profile</a>
+          <img src={currentCandidate.Avatar || ''} alt={currentCandidate.Name || 'Candidate Avatar'} className="candidate-avatar" />
+          <h2>{currentCandidate.Name}</h2>
+          <p>Username: {currentCandidate.UserName}</p>
+          <p>Location: {currentCandidate.Location}</p>
+          <p>Email: {currentCandidate.Email}</p>
+          <p>Company: {currentCandidate.Company}</p>
+          <a href={currentCandidate.Html_url || '#'} target="_blank" rel="noopener noreferrer">GitHub Profile</a>
+          <div className="button-container">
+            <button className="save-button" onClick={handleSaveCandidate}>+</button>
+            <button className="skip-button" onClick={handleSkipCandidate}>-</button>
+          </div>
         </div>
+      ) : (
+        <p>No more candidates available</p>
       )}
     </div>
   );
 };
-
 
 export default CandidateSearch;
