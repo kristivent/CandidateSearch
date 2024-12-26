@@ -5,7 +5,11 @@ import Candidate from '../interfaces/Candidate.interface';
 const CandidateSearch = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
   const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
-  const [savedCandidates, setSavedCandidates] = useState<Candidate[]>([]);
+  const [savedCandidates, setSavedCandidates] = useState<Candidate[]>(() => {
+    const saved = localStorage.getItem('savedCandidates');
+    return saved ? JSON.parse(saved) : [];
+  });
+
 
   useEffect(() => {
     const fetchCandidates = async () => {
@@ -36,7 +40,9 @@ const CandidateSearch = () => {
 
   const handleSaveCandidate = () => {
     if (currentCandidateIndex < candidates.length) {
-      setSavedCandidates([...savedCandidates, candidates[currentCandidateIndex]]);
+      const newSavedCandidates = [...savedCandidates, candidates[currentCandidateIndex]];
+      setSavedCandidates(newSavedCandidates);
+      localStorage.setItem('savedCandidates', JSON.stringify(newSavedCandidates));
       setCurrentCandidateIndex(currentCandidateIndex + 1);
     }
   };
