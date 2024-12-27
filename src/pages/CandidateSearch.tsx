@@ -17,9 +17,9 @@ const CandidateSearch = () => {
 
   const addToPotentialCandidates = () => {
     let parsedPotentialCandidates: Candidate[] = [];
-    const storedSavedCandidates = localStorage.getItem('savedCandidates');
-    if (typeof storedSavedCandidates === 'string') {
-      parsedPotentialCandidates = JSON.parse(storedSavedCandidates);
+    const storedPotentialCandidates = localStorage.getItem('potentialCandidates');
+    if (typeof storedPotentialCandidates === 'string') {
+      parsedPotentialCandidates = JSON.parse(storedPotentialCandidates);
     }
     parsedPotentialCandidates.push(currentCandidate);
     localStorage.setItem('savedCandidates', JSON.stringify(parsedPotentialCandidates));
