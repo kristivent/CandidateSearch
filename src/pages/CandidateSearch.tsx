@@ -1,55 +1,63 @@
-import { useState, FormEvent } from 'react';
-import { searchGithubUser } from '../api/API';
+import { useState, useEffect } from 'react';
+import { searchGithub, searchGithubUser } from '../api/API';
 import Candidate from '../interfaces/Candidate.interface';
 
 const CandidateSearch = () => {
-  const [currentCandidate, setCurrentCandidate] = useState<Candidate>({
-    Name: '',
-    UserName: '',
-    Location: '',
-    Avatar: '',
-    Email: '',
-    Html_url: '',
-    Company: '',
+  const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [currentCandidateIndex, setCurrentCandidateIndex] = useState(0);
+  const [savedCandidates, setSavedCandidates] = useState<Candidate[]>(() => {
+    const saved = localStorage.getItem('savedCandidates');
+    return saved ? JSON.parse(saved) : [];
   });
 
-  const [searchInput, setSearchInput] = useState<string>('');
+  useEffect(() => {
+    const fetchCandidates = async () => {
+      try {
+        const users = await searchGithub();
+        const candidateData = await Promise.all(
+          users.map(async (user: { login: string }) => {
+            const data = await searchGithubUser(user.login);
+            return {
+              Name: data.name,
+              UserName: data.login,
+              Location: data.location,
+              Avatar: data.avatar_url,
+              Email: data.email,
+              Html_url: data.html_url,
+              Company: data.company,
+            } as Candidate;
+          })
+        );
+        setCandidates(candidateData);
+      } catch (error) {
+        console.error('Error fetching candidates:', error);
+      }
+    };
 
-  const addToPotentialCandidates = () => {
-    let parsedPotentialCandidates: Candidate[] = [];
-    const storedPotentialCandidates = localStorage.getItem('potentialCandidates');
-    if (typeof storedPotentialCandidates === 'string') {
-      parsedPotentialCandidates = JSON.parse(storedPotentialCandidates);
+    fetchCandidates();
+  }, []);
+
+  const handleSaveCandidate = () => {
+    if (currentCandidateIndex < candidates.length) {
+      const newSavedCandidates = [...savedCandidates, candidates[currentCandidateIndex]];
+      setSavedCandidates(newSavedCandidates);
+      localStorage.setItem('savedCandidates', JSON.stringify(newSavedCandidates));
+      setCurrentCandidateIndex(currentCandidateIndex + 1);
     }
-    parsedPotentialCandidates.push(currentCandidate);
-    localStorage.setItem('savedCandidates', JSON.stringify(parsedPotentialCandidates));
   };
 
-  const searchForCandidateByUsername = async (event: FormEvent, username: string) => {
-    event.preventDefault();
-    const data: Candidate = await searchGithubUser(username);
-    setCurrentCandidate(data);
+  const handleSkipCandidate = () => {
+    if (currentCandidateIndex < candidates.length) {
+      setCurrentCandidateIndex(currentCandidateIndex + 1);
+    }
   };
+
+  const currentCandidate = candidates[currentCandidateIndex];
 
   return (
-    <>
-      <section id='searchSection'>
-        <form
-          onSubmit={(event: FormEvent) =>
-            searchForCandidateByUsername(event, searchInput)
-          }
-        >
-          <input
-            type='text'
-            placeholder='Enter a GitHub Username'
-            onChange={(e) => setSearchInput(e.target.value)}
-          />
-          <button type='submit' id='searchBtn'>
-            Search
-          </button>
-        </form>
-      </section>
-      {currentCandidate && (
+    <div className="candidate-search-container">
+      <h1>Candidate Search</h1>
+      {currentCandidate ? (
         <div className="candidate-container">
           <img src={currentCandidate.Avatar || ''} alt={currentCandidate.Name || 'Candidate Avatar'} className="candidate-avatar" />
           <h2>{currentCandidate.Name}</h2>
@@ -59,11 +67,14 @@ const CandidateSearch = () => {
           <p>Company: {currentCandidate.Company}</p>
           <a href={currentCandidate.Html_url || '#'} target="_blank" rel="noopener noreferrer">GitHub Profile</a>
           <div className="button-container">
-            <button className="save-button" onClick={addToPotentialCandidates}>Save</button>
+            <button className="save-button" onClick={handleSaveCandidate}>+</button>
+            <button className="skip-button" onClick={handleSkipCandidate}>-</button>
           </div>
         </div>
+      ) : (
+        <p>No more candidates available</p>
       )}
-    </>
+    </div>
   );
 };
 
