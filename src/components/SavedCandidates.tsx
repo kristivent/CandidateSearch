@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import Candidate from '../interfaces/Candidate.interface';
-import CandidateCard from '../components/CandidateCard';
+import CandidateCard from './CandidateCard';
 
 const SavedCandidates = () => {
-  const [savedCandidates, setSavedCandidates] = useState<Candidate[]>(() => {
+  const [SavedCandidates, setSavedCandidates] = useState<Candidate[]>(() => {
     const saved = localStorage.getItem('savedCandidates');
     return saved ? JSON.parse(saved) : [];
   });
@@ -16,10 +16,10 @@ const SavedCandidates = () => {
   }, []);
 
   return (
-    <div className="saved-candidates-container">
+    <div className="potential-candidates-container">
       <h1>Potential Candidates</h1>
-      {savedCandidates.length > 0 ? (
-        savedCandidates.map((candidate, index) => (
+      {SavedCandidates.length > 0 ? (
+        SavedCandidates.map((candidate, index) => (
           <CandidateCard
             key={index}
             currentCandidate={candidate}

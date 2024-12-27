@@ -1,73 +1,27 @@
-import type React from 'react';
-import type Candidate from '../interfaces/Candidate.interface';
-import { ImCross } from 'react-icons/im';
+import React from 'react';
 import { CgPlayListAdd } from 'react-icons/cg';
+import Candidate from '../interfaces/Candidate.interface';
 
-type CandidateCardProps = {
-    currentCandidate: Candidate;
-    saveCandidate?: (() => void) | null;
-    onPotentialCandidates?: boolean | null;
-    addtoPotentialCandidates?: (() => void) | null;
-    removeFromStorage?:
-        | ((
-            e: React.MouseEvent<SVGSVGElement, MouseEvent>,
-            currentlyOnSavedCandidates: boolean | null | undefined,
-            title: string | null
-        ) => void)
-        | null;
-    };
+interface CandidateCardProps {
+  currentCandidate: Candidate;
+  addtoPotentialCandidates?: () => void;
+}
 
-    const candidateCard = ({
-        currentCandidate,
-        addtoPotentialCandidates,
-        onPotentialCandidates,
-        removeFromStorage,
-    }: CandidateCardProps) => {
-        return (
-            <>
-                {currentCandidate?.Name ? (
-                    <section className='candidateCard'>
-                        <figure>
-                            <img src={`${currentCandidate.Avatar}`} alt={`${currentCandidate.Name}`} />
-                        </figure>
-                        <article className='details'>
-                            <h2>{currentCandidate.UserName}</h2>
-                            <p>
-                                <strong>Location:</strong> {currentCandidate.Location}
-                            </p>
-                            <p>
-                                <strong>Email:</strong> {currentCandidate.Email}
-                            </p>
-                            <p>
-                                <strong>HTML:</strong> {currentCandidate.Html_url}
-                            </p>
-                            <p>
-                                <strong>Company:</strong> {currentCandidate.Company}
-                            </p>
-                        </article>
-                        {onPotentialCandidates ? (
-                            <aside className='icons'>
-                                <ImCross
-                                    style={{ fontSize: '40px', cursor: 'pointer' }}
-                                    onClick={(e: React.MouseEvent<SVGSVGElement, MouseEvent>) =>
-                                      removeFromStorage?.(
-                                        e,
-                                        onPotentialCandidates, 
-                                        currentCandidate.Name)
-                                    }
-                                />
-                            </aside>
-                        ) : (
-                            <aside className='icons'>
-                                <CgPlayListAdd
-                                    onClick={() => addtoPotentialCandidates?.()}
-                                />
-                            </aside>
-                        )}
-                    </section>
-                ) : null}
-            </>
-                );
-            };
-        
-        export default candidateCard;
+const CandidateCard: React.FC<CandidateCardProps> = ({ currentCandidate, addtoPotentialCandidates }) => {
+  return (
+    <div className="candidate-card">
+      <img src={currentCandidate.Avatar || ''} alt={currentCandidate.Name || 'Candidate Avatar'} className="candidate-avatar" />
+      <h2>{currentCandidate.Name}</h2>
+      <p>Username: {currentCandidate.UserName}</p>
+      <p>Location: {currentCandidate.Location}</p>
+      <p>Email: {currentCandidate.Email}</p>
+      <p>Company: {currentCandidate.Company}</p>
+      <a href={currentCandidate.Html_url || ''} target="_blank" rel="noopener noreferrer">GitHub Profile</a>
+      <aside className='icons'>
+        <CgPlayListAdd onClick={() => addtoPotentialCandidates?.()} />
+      </aside>
+    </div>
+  );
+};
+
+export default CandidateCard;

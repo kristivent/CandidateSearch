@@ -1,4 +1,4 @@
-import Candidate from '../interfaces/Candidate.interface';
+import { GitHubUser } from '../interfaces/GitHubUser';
 
 const searchGithub = async () => {
   try {
@@ -25,21 +25,21 @@ const searchGithub = async () => {
   }
 };
 
-const searchGithubUser = async (username: string) => {
+const searchGithubUser = async (username: string): Promise<GitHubUser> => {
   try {
     const response = await fetch(`https://api.github.com/users/${username}`, {
       headers: {
         Authorization: `Bearer ${import.meta.env.VITE_GITHUB_TOKEN}`,
       },
     });
-    const data = await response.json();
+    const data: GitHubUser = await response.json();
     if (!response.ok) {
       throw new Error('invalid API response, check the network tab');
     }
     return data;
   } catch (err) {
-    // console.log('an error occurred', err);
-    return {};
+    console.log('an error occurred', err);
+    return {} as GitHubUser;
   }
 };
 
