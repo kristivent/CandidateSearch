@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { searchGithub, searchGithubUser } from '../api/API';
 import Candidate from '../interfaces/Candidate.interface';
+import { GitHubUser } from '../interfaces/GitHubUser';
 
 const CandidateSearch = () => {
   const [candidates, setCandidates] = useState<Candidate[]>([]);
@@ -14,17 +15,17 @@ const CandidateSearch = () => {
     const fetchCandidates = async () => {
       try {
         const users = await searchGithub();
-        const candidateData = await Promise.all(
+        const candidateData: Candidate[] = await Promise.all(
           users.map(async (user: { login: string }) => {
-            const data = await searchGithubUser(user.login);
+            const data: GitHubUser = await searchGithubUser(user.login);
             return {
-              Name: data.name,
-              UserName: data.login,
-              Location: data.location,
-              Avatar: data.avatar_url,
-              Email: data.email,
-              Html_url: data.html_url,
-              Company: data.company,
+              Name: data.name || '',
+              UserName: data.login || '',
+              Location: data.location || '',
+              Avatar: data.avatar_url || '',
+              Email: data.email || '',
+              Html_url: data.html_url || '',
+              Company: data.company || '',
             } as Candidate;
           })
         );
