@@ -7,7 +7,7 @@ interface PotentialCandidatesProps {
     removeFromStorage:
         | ((
             e: React.MouseEvent<SVGSVGElement, MouseEvent>,
-            currentlyOnSavedCandidates: boolean | null | undefined,
+            currentlyOnPotentialCandidates: boolean | null | undefined,
             title: string | null
         ) => void)
         | null;

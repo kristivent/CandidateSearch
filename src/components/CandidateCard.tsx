@@ -6,7 +6,6 @@ import { CgPlayListAdd } from 'react-icons/cg';
 type CandidateCardProps = {
     currentCandidate: Candidate;
     saveCandidate?: (() => void) | null;
-    onSavedCandidates?: boolean | null;
     onPotentialCandidates?: boolean | null;
     addtoPotentialCandidates?: (() => void) | null;
     removeFromStorage?:
