@@ -1,13 +1,11 @@
 import React from 'react';
-import { CgPlayListAdd } from 'react-icons/cg';
 import Candidate from '../interfaces/Candidate.interface';
 
 interface CandidateCardProps {
   currentCandidate: Candidate;
-  addtoPotentialCandidates?: () => void;
 }
 
-const CandidateCard: React.FC<CandidateCardProps> = ({ currentCandidate, addtoPotentialCandidates }) => {
+const CandidateCard: React.FC<CandidateCardProps> = ({ currentCandidate }) => {
   return (
     <div className="candidate-card">
       <img src={currentCandidate.Avatar || ''} alt={currentCandidate.Name || 'Candidate Avatar'} className="candidate-avatar" />
@@ -16,10 +14,7 @@ const CandidateCard: React.FC<CandidateCardProps> = ({ currentCandidate, addtoPo
       <p>Location: {currentCandidate.Location}</p>
       <p>Email: {currentCandidate.Email}</p>
       <p>Company: {currentCandidate.Company}</p>
-      <a href={currentCandidate.Html_url || ''} target="_blank" rel="noopener noreferrer">GitHub Profile</a>
-      <aside className='icons'>
-        <CgPlayListAdd onClick={() => addtoPotentialCandidates?.()} />
-      </aside>
+      <a href={currentCandidate.Html_url || '#'} target="_blank" rel="noopener noreferrer">GitHub Profile</a>
     </div>
   );
 };
