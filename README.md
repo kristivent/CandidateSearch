@@ -1,33 +1,43 @@
-# React + TypeScript + Vite
+# CandidateSearch
+CandidateSearch is a web-based application that allows users to scan potential public profiles on GitHub and add them to a list of Potential Candidates for a job.
+**Features**
+GitHub Profile Exploration: Fetches and displays relevant GitHub user information and repositories for skill buddies.
+Responsive Design: Optimized for seamless use across desktop and mobile devices
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Frontend**: React, TypeScript, JavaScript, CSS
 
-Currently, two official plugins are available:
+## Table of Contents
+- [CandidateSearch](#candidatesearch)
+  - [Table of Contents](#table-of-contents)
+  - [How it works](#how-it-works)
+  - [Usage](#usage)
+  - [Installation](#installation)
+  - [Questions](#questions)
 
-* [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md), which uses [Babel](https://babeljs.io/) for Fast Refresh
-* [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc), which uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## How it works
+When the app is loaded, the user is presented with a potential candidate search page.  They can then click the plus or minus button.  Plus will add the candidate to the list of Potential Candidates (accessed through the navbar at top).  Minus will display the next candidate.
 
-If you're developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Usage
+Run npm run start:dev and navigate to the prompted URL to see your app in dev.
+The app is deployed to render.Click the below link for working application.
+[https://candidatesearch-6mel.onrender.com/]
 
-* Configure the top-level `parserOptions` property as follows:
+## Installation
+1. Clone the repository:
+[https://github.com/kristivent/candidatesearch]
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+2.  Build
+Install dependencies
+```sh
+npm i
+```
+3.  Start the server and the client using
+```
+npm run start:dev
 ```
 
-* Replace `plugin:@typescript-eslint/recommended` with `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`.
-* Optionally, add `plugin:@typescript-eslint/stylistic-type-checked`.
-* Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` and `plugin:react/jsx-runtime` to the `extends` list.
-
----
-© 2024 edX Boot Camps LLC. Confidential and Proprietary. All Rights Reserved.
+## Questions
+Please contact ventk84@gmail.com with any questions.
+Starter code from Rutgers Bootcamp used for portions of application.
+*Note - the API key, although acquired, was presenting with an error that prevented the page from loading correctly.  In office hours, we were unable to resolve this and commented out the use of the web token so that the application can still run, but it does have a rate limit. 
